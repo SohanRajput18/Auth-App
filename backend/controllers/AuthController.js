@@ -35,13 +35,15 @@ const login = async (req, res) => {
         const errorMsg = 'Auth failed email or password is wrong';
         if(!user) {
             return res.status(403)
-                .json({message: errorMsg, success: false});
+            .json({message: errorMsg, success: false});
         }
-        const isPassEqual = await bcrypt.compare(password, user.password);
+        // hashes(encrypt) the password typed by the user and compares with hashed password stored in db
+        const isPassEqual = await bcrypt.compare(password, user.password); 
         if(!isPassEqual) {
             return res.status(403)
                 .json({message: errorMsg, success: false});
         }
+        
         const jwtToken = jwt.sign(
             {email: user.email, _id: user._id},
             process.env.JWT_SECRET,
